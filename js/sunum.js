@@ -39,10 +39,10 @@ function ciz(zorla = false) {
   adimlariCiz();
   $("#kisiSayi").textContent = satirlar.length;
   const a = kontrol.asama;
-  const anahtar = a + "|" + (a === 2 ? sekme : "");
+  const anahtar = a + "|" + (a === 3 ? sekme : "");
   if (zorla || anahtar !== cizilen) {
     cizilen = anahtar;
-    ({ 1: s1, 2: s2, 3: s3, 4: s4, 5: s5, 6: s6 })[a]?.();
+    ({ 1: s1, 2: s3, 3: s2, 4: s4, 5: s5, 6: s6 })[a]?.();
     if (a >= 3) pythonHazirla().catch(() => {});
   } else {
     guncelle[a]?.();
@@ -99,7 +99,7 @@ function isimleriCiz(ilk = false) {
 function s2() {
   const sekmeler = [["ozet", "Özet istatistikler"], ["kisiler", "Kişi kişi"], ["dagilim", "Dağılım"], ["uygulamalar", "Uygulamalar"]];
   govde.innerHTML = `
-    ${baslik("Aşama 2", "teal", "Sınıfımızın ekran süresi", `n = ${satirlar.length} kişi · değişken: günlük toplam ekran süresi (dk)`,
+    ${baslik("Aşama 3", "teal", "Sınıfımızın ekran süresi", `n = ${satirlar.length} kişi · değişken: günlük toplam ekran süresi (dk)`,
       `<div class="sekmeler" id="sekmeler">${sekmeler.map(([k, a]) => `<button data-s="${k}" class="${k === sekme ? "aktif" : ""}">${a}</button>`).join("")}</div>`)}
     <div id="s2icerik"></div>`;
   $("#sekmeler").onclick = e => { const b = e.target.closest("button"); if (!b) return; sekme = b.dataset.s; ciz(true); };
@@ -134,7 +134,7 @@ function s2Ozet() {
       </div>`;
   };
   ciz2();
-  guncelle[2] = ciz2;
+  guncelle[3] = ciz2;
 }
 function s2Kisiler() {
   const yuk = Math.max(360, satirlar.length * 26 + 90);
@@ -142,7 +142,7 @@ function s2Kisiler() {
     <div class="grafik-kutu" style="height:${yuk}px"><canvas id="kisiG"></canvas></div></div>`;
   const ciz2 = () => { const k = $("#kisiG"); if (k) { k.parentElement.style.height = Math.max(360, satirlar.length * 26 + 90) + "px"; kisiCubuk(k, satirlar); } };
   setTimeout(ciz2, 0);
-  guncelle[2] = ciz2;
+  guncelle[3] = ciz2;
 }
 function s2Dagilim() {
   $("#s2icerik").innerHTML = `
@@ -169,7 +169,7 @@ function s2Dagilim() {
       <p style="font-size:17px;line-height:1.6;margin:14px 0 0">${o.ortalama > o.medyan ? "Ortalama > medyan: kuyruk <b>sağa</b> uzanıyor. Ortalama her zaman kuyruğu takip eder." : "Ortalama ≤ medyan: kuyruk sağa uzanmıyor."}</p>`;
   };
   setTimeout(ciz2, 0);
-  guncelle[2] = ciz2;
+  guncelle[3] = ciz2;
 }
 function s2Uyg() {
   $("#s2icerik").innerHTML = `
@@ -190,7 +190,7 @@ function s2Uyg() {
       }).join("")}</tbody></table>`;
   };
   setTimeout(ciz2, 0);
-  guncelle[2] = ciz2;
+  guncelle[3] = ciz2;
 }
 
 // ------------------------------------------------------------
@@ -198,7 +198,7 @@ function s2Uyg() {
 // ------------------------------------------------------------
 function s3() {
   govde.innerHTML = `
-    ${baslik("Aşama 3", "violet", "Sıra sizde: hesap makinesiyle bulun", "Telefonlarınızda: ortalama, medyan, mod, varyans ve standart sapma",
+    ${baslik("Aşama 2", "violet", "Sıra sizde: hesap makinesiyle bulun", "Telefonlarınızda: ortalama, medyan, mod, varyans ve standart sapma",
       `<button class="btn ${kontrol.cevapGoster ? "hayalet" : "coral"}" id="cevapBtn">${kontrol.cevapGoster ? "Cevapları gizle" : "Cevapları göster"}</button>`)}
     <div class="s-izgara" style="grid-template-columns: 1.3fr .7fr">
       <div class="kart panel"><h3>Kaç kişi buldu?</h3><div class="ilerleme" id="ilerleme"></div></div>
@@ -226,7 +226,7 @@ function s3() {
     }).join("");
   };
   ciz2();
-  guncelle[3] = ciz2;
+  guncelle[2] = ciz2;
 }
 
 // ------------------------------------------------------------

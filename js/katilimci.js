@@ -32,7 +32,7 @@ function ciz(zorla = false) {
   const anahtar = a + "|" + (a === 1 ? (benim() && !duzenle ? "kayitli" : "form") : "");
   if (zorla || anahtar !== cizilenAsama) {
     cizilenAsama = anahtar;
-    ({ 1: asama1, 2: asama2, 3: asama3, 4: asama4, 5: asama5, 6: asama6 })[a]?.();
+    ({ 1: asama1, 2: asama3, 3: asama2, 4: asama4, 5: asama5, 6: asama6 })[a]?.();
     if (a >= 3) pythonHazirla().catch(() => {});        // Python'u arka planda hazırla
   } else {
     guncelle[a]?.();
@@ -169,7 +169,7 @@ function asama2() {
       <p class="soluk">Sınıfın verisi analiz ediliyor. Aşağıda kendi yerini görebilirsin.</p>
     </div>
     <div class="kart" id="benKart"></div>`;
-  guncelle[2] = benKartiCiz;
+  guncelle[3] = benKartiCiz;
   benKartiCiz();
 }
 function benKartiCiz() {
@@ -216,6 +216,11 @@ function asama3() {
       <div class="cipler" id="cipler"></div>
       <div class="cipler" style="margin-top:8px" id="yardimcilar"></div>
     </div>
+    <div class="kart">
+      <div class="cip-baslik"><h3>Mod için: herkesin en çok kullandığı uygulama</h3></div>
+      <div class="cipler" id="katCipler"></div>
+      <p class="rehber" style="margin:8px 0 0">Say bakalım: en çok tekrar eden uygulama hangisi? (“Sıralı” seçilince aynı uygulamalar yan yana gelir.)</p>
+    </div>
     <div class="kart" id="hm"></div>
     <div class="kart" style="display:grid;gap:10px" id="gorevler"></div>`;
   hm = hesapMakinesi($("#hm"));
@@ -224,7 +229,7 @@ function asama3() {
   $("#yardimcilar").onclick = e => { const b = e.target.closest(".cip"); if (b) hm.sayiEkle(b.dataset.v); };
   gorevlerCiz();
   ciplerCiz();
-  guncelle[3] = () => { ciplerCiz(); gorevDurum(); };
+  guncelle[2] = () => { ciplerCiz(); gorevDurum(); };
 }
 function ciplerCiz() {
   const x = satirlar.map(r => r.toplam);
@@ -235,6 +240,11 @@ function ciplerCiz() {
   govde.querySelectorAll(".anahtar button").forEach(b => b.classList.toggle("aktif", (b.dataset.s === "1") === siraliGoster));
   $("#cipler").innerHTML = liste.map((v, i) =>
     `<button type="button" class="cip ${siraliGoster && kontrol.cevapGoster && ortaIdx.includes(i) ? "orta" : ""}" data-v="${v}" title="${i + 1}. değer">${v}</button>`).join("");
+  const renk = Object.fromEntries(UYGULAMALAR.map(u => [u.k, u.renk]));
+  const sira = Object.fromEntries(UYGULAMALAR.map((u, i) => [u.k, i]));
+  let kat = satirlar.map(r => r.en_cok).filter(v => v && v !== "yok");
+  if (siraliGoster) kat = [...kat].sort((p, q) => sira[p] - sira[q]);
+  $("#katCipler").innerHTML = kat.map(k => `<span class="cip" style="font-family:var(--font)"><i style="display:inline-block;width:9px;height:9px;border-radius:3px;background:${renk[k]};margin-right:6px"></i>${UYG_ADI[k]}</span>`).join("");
   const sx = I.toplamF(x), sx2 = x.reduce((a, v) => a + v * v, 0);
   $("#yardimcilar").innerHTML = `
     <button type="button" class="cip yardim" data-v="${n}">n = ${n}</button>
@@ -455,7 +465,7 @@ function odulListeCiz() {
       const kodDegisti = kontrol && kontrol.kodId !== k.kodId;
       kontrol = k;
       if (eski !== k.asama) duzenle = false;
-      if (eski === k.asama && (k.asama === 3)) { gorevDurum(); ciplerCiz(); }
+      if (eski === k.asama && (k.asama === 2)) { gorevDurum(); ciplerCiz(); }
       if (eski === k.asama && k.asama === 4 && kodDegisti && k.kodId) {
         const btn = $("#getirBtn"); if (btn) { btn.classList.add("coral"); btn.textContent = "Yeni kod geldi → getir"; }
       }

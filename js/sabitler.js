@@ -15,8 +15,8 @@ UYG_ADI.yok = "—";
 
 export const ASAMALAR = [
   { no: 1, ad: "Veri toplama" },
-  { no: 2, ad: "Analiz" },
-  { no: 3, ad: "Hesap makinesi" },
+  { no: 2, ad: "Hesap makinesi" },
+  { no: 3, ad: "Analiz" },
   { no: 4, ad: "Python" },
   { no: 5, ad: "Korelasyon & tahmin" },
   { no: 6, ad: "Ödüller" }
@@ -37,9 +37,10 @@ export const KODLAR = [
     id: "ozet",
     ad: "1 · Özet istatistikler",
     kod:
-`print(df["toplam"].describe().round(1))
-print("Varyans:", round(df["toplam"].var(ddof=0), 1))
-print("Std    :", round(df["toplam"].std(ddof=0), 1))`
+`print(df["toplam"].describe().round(1))   # std burada ÷(n-1)
+print("Varyans ÷n  :", round(df["toplam"].var(ddof=0), 1))
+print("Std ÷n      :", round(df["toplam"].std(ddof=0), 1))
+print("Std ÷(n-1)  :", round(df["toplam"].std(ddof=1), 1))`
   },
   {
     id: "cubuk",
