@@ -1,0 +1,50 @@
+rules_version = '2';
+// HASTAK Canlı – Firestore güvenlik kuralları
+// Yönetici: sandalliyasarcan@gmail.com (Authentication > Users içinde bu e-postayla bir kullanıcı olmalı)
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function yonetici() {
+      return request.auth != null && request.auth.token.email == "sandalliyasarcan@gmail.com";
+    }
+    function girisli() { return request.auth != null; }
+    function asama() {
+      return get(/databases/$(database)/documents/kontrol/durum).data.get("asama", 0);
+    }
+    function dakika(d, k) { return d[k] is int && d[k] >= 0 && d[k] <= 1440; }
+    function gecerli(d) {
+      return d.keys().hasAll(["ad","whatsapp","instagram","youtube","tiktok","x","oyun","diger","toplam","adim","en_cok"])
+        && d.keys().hasOnly(["ad","whatsapp","instagram","youtube","tiktok","x","oyun","diger","toplam","adim","en_cok","zaman","hesap","tahmin","tahminZaman"])
+        && d.ad is string && d.ad.size() >= 2 && d.ad.size() <= 40
+        && dakika(d,"whatsapp") && dakika(d,"instagram") && dakika(d,"youtube") && dakika(d,"tiktok")
+        && dakika(d,"x") && dakika(d,"oyun") && dakika(d,"diger")
+        && d.toplam == d.whatsapp + d.instagram + d.youtube + d.tiktok + d.x + d.oyun + d.diger
+        && d.toplam <= 1440
+        && (d.adim == null || (d.adim is int && d.adim >= 0 && d.adim <= 100000))
+        && d.en_cok in ["whatsapp","instagram","youtube","tiktok","x","oyun","diger","yok"]
+        && (!("hesap" in d) || d.hesap is map)
+        && (!("tahmin" in d) || (d.tahmin is number && d.tahmin >= -1 && d.tahmin <= 1));
+    }
+
+    // Sunumun aşama bilgisi: herkes okur, sadece yönetici yazar
+    match /kontrol/{belge} {
+      allow read: if girisli();
+      allow write: if yonetici();
+    }
+
+    // Katılımcı verileri: herkes okur (sunumda isimlerle gösterilecek),
+    // herkes yalnızca KENDİ belgesini yazar; veri formu sadece 1. aşamada açık.
+    match /katilimcilar/{uid} {
+      allow read: if girisli();
+      allow delete: if yonetici();
+      allow create: if girisli() && request.auth.uid == uid && asama() == 1 && gecerli(request.resource.data);
+      allow update: if girisli() && request.auth.uid == uid && gecerli(request.resource.data)
+        && (asama() == 1 || request.resource.data.diff(resource.data).affectedKeys().hasOnly(["hesap","tahmin","tahminZaman"]));
+    }
+
+    // Başka hiçbir şeye erişim yok
+    match /{diger=**} {
+      allow read, write: if false;
+    }
+  }
+}

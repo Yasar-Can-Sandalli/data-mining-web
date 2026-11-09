@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HASTAK Canlı · Sunum Ekranı</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/stil.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js" defer></script>
+</head>
+<body>
+  <div id="demoSerit" class="demo-serit gizli">DEMO MODU · veriler sadece bu tarayıcıda · katılımcıları aynı tarayıcıda başka sekmede aç</div>
+
+  <section id="girisSahne" class="giris-sahne gizli">
+    <form class="kart giris-kart" id="girisForm">
+      <div><span class="etiket coral">Sunum ekranı</span><h2 style="margin-top:10px">HASTAK Canlı</h2>
+        <p class="soluk" style="margin:4px 0 0">Yönetici hesabınla giriş yap.</p></div>
+      <input class="girdi" id="eposta" type="email" placeholder="E-posta" autocomplete="username" required>
+      <input class="girdi" id="sifre" type="password" placeholder="Şifre" autocomplete="current-password" required>
+      <div id="girisMesaj"></div>
+      <button class="btn coral" type="submit">Giriş yap</button>
+    </form>
+  </section>
+
+  <div id="uygulama" class="gizli">
+    <header class="s-ust">
+      <div class="logo">HASTAK <span>Canlı</span></div>
+      <nav class="adimlar" id="adimlar"></nav>
+      <div class="s-sag">
+        <span class="sayac"><b id="kisiSayi">0</b> kişi</span>
+        <button class="ikon-btn" id="ayarBtn" title="Ayarlar">⚙︎</button>
+      </div>
+    </header>
+    <main class="s-govde" id="govde"></main>
+  </div>
+
+  <div class="modal-perde gizli" id="ayarModal">
+    <div class="kart modal">
+      <h3>Ayarlar</h3>
+      <div class="not" id="ayarBilgi"></div>
+      <div id="demoAraclar" class="gizli" style="display:grid;gap:8px">
+        <button class="btn violet" id="ornekBtn">Prova: 32 örnek katılımcı ekle</button>
+        <a class="btn ikincil" id="katilimciAc" target="_blank" style="text-align:center;text-decoration:none">Katılımcı ekranını yeni sekmede aç</a>
+      </div>
+      <hr style="border:0;border-top:1px solid var(--line);width:100%">
+      <div><b>Tüm katılımcı verilerini sil</b><p class="not" style="margin:4px 0 8px">Sunumdan sonra kullan. Geri alınamaz. Onaylamak için kutuya <b>SİL</b> yaz.</p>
+        <div style="display:flex;gap:8px"><input class="girdi" id="silOnay" placeholder="SİL"><button class="btn coral" id="silBtn">Sil</button></div>
+        <div id="silMesaj" style="margin-top:8px"></div></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn hayalet" id="cikisBtn">Çıkış yap</button>
+        <button class="btn" id="ayarKapat">Kapat</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/sunum.js"></script>
+</body>
+</html>
