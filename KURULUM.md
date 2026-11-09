@@ -103,8 +103,8 @@ Firebase → **Authentication → Settings → Authorized domains → Add domain
 | # | Sunum ekranı | Katılımcı ekranı |
 |---|---|---|
 | 1 | QR + canlı sayaç + isimler | Form: uygulama süreleri (sa/dk), adım, onay |
-| 2 | Özet istatistikler · kişi kişi grafik · histogram + boxplot · uygulamalar | Kendi yeri (sıra, ortalamadan sapma) |
-| 3 | Kaç kişi buldu + ilk bulanlar · "Cevapları göster" | Hesap makinesi + 5 görev (ortalama, medyan, mod, varyans, std) |
+| 2 | Kaç kişi buldu + ilk bulanlar · "Cevapları göster" | Hesap makinesi + 5 görev (ortalama, medyan, mod, varyans, std) |
+| 3 | Özet istatistikler · kişi kişi grafik · histogram + boxplot · uygulamalar | Kendi yeri (sıra, ortalamadan sapma) |
 | 4 | Python kodları · "Katılımcılara gönder" · "Burada çalıştır" | Kod editörü (`df` hazır) + "Sunumdaki kodu getir" |
 | 5 | Saçılım grafiği · tahminler · "Sonucu göster" (r + eğilim çizgisi) | r tahmini (−1…+1) → sonuç + kendi noktası |
 | 6 | Ödüller tek tek | Açıklanan ödüller |
