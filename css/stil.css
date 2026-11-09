@@ -157,6 +157,8 @@ code, pre, .mono { font-family: var(--mono); }
 .qr-url { font-family: var(--mono); font-size: 17px; margin-top: 14px; word-break: break-all; color: var(--violet); font-weight: 600; }
 .dev-sayi { font-family: var(--baslik); font-size: 88px; font-weight: 800; line-height: 1; color: var(--coral); }
 .isimler { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.isim-sil { border: 0; background: transparent; color: var(--muted); font-size: 16px; line-height: 1; margin-left: 6px; padding: 0 2px; opacity: .35; }
+.isim:hover .isim-sil { opacity: 1; color: var(--coral); }
 .isim { background: var(--lilac-bg); color: var(--ink); padding: 8px 14px; border-radius: 999px; font-weight: 600; font-size: 15px; animation: belir .4s ease; }
 .grafik-kutu { position: relative; width: 100%; }
 .tablo { width: 100%; border-collapse: collapse; font-size: 14.5px; }

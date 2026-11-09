@@ -84,6 +84,7 @@ async function firebaseKatmani() {
     async hesapKaydet(uid, gorev) {
       await F.updateDoc(F.doc(db, "katilimcilar", uid), { [`hesap.${gorev}`]: F.serverTimestamp() });
     },
+    async katilimciSil(id) { await F.deleteDoc(F.doc(db, "katilimcilar", id)); },
     async tahminKaydet(uid, deger) {
       await F.updateDoc(F.doc(db, "katilimcilar", uid), { tahmin: deger, tahminZaman: F.serverTimestamp() });
     },
@@ -146,6 +147,7 @@ function demoKatmani() {
       const d = oku(); const k = d.katilimcilar[u]; if (!k) throw new Error("Önce formu doldur.");
       k.tahmin = deger; k.tahminZaman = Date.now(); yaz(d);
     },
+    async katilimciSil(id) { const d = oku(); delete d.katilimcilar[id]; yaz(d); },
     async tumunuSil() { const n = Object.keys(oku().katilimcilar).length; yaz({ kontrol: { ...BOS_KONTROL }, katilimcilar: {} }); return n; },
     // Sadece demo: prova için sahte sınıf verisi
     async ornekVeriEkle(adet = 32) {

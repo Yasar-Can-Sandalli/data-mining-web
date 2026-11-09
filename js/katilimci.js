@@ -79,7 +79,7 @@ function asama1() {
       </div>
       <div class="rehber">
         📱 <b>Değerleri nereden bulurum?</b><br>
-        iPhone: <b>Ayarlar → Ekran Süresi → Tüm Etkinlikleri Gör → Hafta</b> (günlük ortalama yazar)<br>
+        iPhone: <b>Ayarlar → Ekran Süresi → Tüm Uygulama ve Web Sitesi Etkinliğini Gör → Hafta</b> (“Günlük ortalama” yazar)<br>
         Android: <b>Ayarlar → Dijital Denge ve ebeveyn denetimleri</b> (bazı telefonlarda “Dijital Sağlıklılık”)<br>
         Son 7 günün <b>günlük ortalamasını</b> gir; kullanmadığın uygulamayı boş bırak.
       </div>
@@ -147,7 +147,7 @@ function asama1() {
     const btn = form.querySelector("button[type=submit]");
     btn.disabled = true; btn.innerHTML = `<span class="yukleniyor"></span> Gönderiliyor`;
     try {
-      await V.formKaydet(uid, { ad, ...v, toplam, adim, en_cok: enCok, hesap: b?.hesap || {} });
+      await V.formKaydet(uid, { ad, ...v, toplam, adim, en_cok: enCok });
       duzenle = false;
       // ciz() veri dinleyicisinden gelecek; yine de garanti olsun:
       setTimeout(() => ciz(true), 300);
@@ -179,7 +179,8 @@ function benKartiCiz() {
   const top = satirlar.map(r => r.toplam);
   const ort = I.ortalama(top), med = I.medyan(top);
   const sira = [...satirlar].sort((x, y) => y.toplam - x.toplam).findIndex(r => r.id === uid) + 1;
-  const z = (b.toplam - ort) / I.std(top);
+  const s = I.std(top);
+  const z = s > 0 ? (b.toplam - ort) / s : 0;
   el.innerHTML = `
     <h3>Sen ve sınıf</h3>
     <div class="mini-izgara" style="margin-top:10px">
@@ -232,7 +233,8 @@ function asama3() {
   guncelle[2] = () => { ciplerCiz(); gorevDurum(); };
 }
 function ciplerCiz() {
-  const x = satirlar.map(r => r.toplam);
+  const gelis = [...satirlar].sort((p, q) => (p.zaman || 0) - (q.zaman || 0));
+  const x = gelis.map(r => r.toplam);
   const liste = siraliGoster ? I.sirali(x) : x;
   const n = liste.length;
   const ortaIdx = n % 2 ? [(n - 1) / 2] : [n / 2 - 1, n / 2];
@@ -242,7 +244,7 @@ function ciplerCiz() {
     `<button type="button" class="cip ${siraliGoster && kontrol.cevapGoster && ortaIdx.includes(i) ? "orta" : ""}" data-v="${v}" title="${i + 1}. değer">${v}</button>`).join("");
   const renk = Object.fromEntries(UYGULAMALAR.map(u => [u.k, u.renk]));
   const sira = Object.fromEntries(UYGULAMALAR.map((u, i) => [u.k, i]));
-  let kat = satirlar.map(r => r.en_cok).filter(v => v && v !== "yok");
+  let kat = gelis.map(r => r.en_cok).filter(v => v && v !== "yok");
   if (siraliGoster) kat = [...kat].sort((p, q) => sira[p] - sira[q]);
   $("#katCipler").innerHTML = kat.map(k => `<span class="cip" style="font-family:var(--font)"><i style="display:inline-block;width:9px;height:9px;border-radius:3px;background:${renk[k]};margin-right:6px"></i>${UYG_ADI[k]}</span>`).join("");
   const sx = I.toplamF(x), sx2 = x.reduce((a, v) => a + v * v, 0);
@@ -281,12 +283,12 @@ function gorevlerCiz() {
     let dogru;
     if (g === "mod") dogru = modSecim && d.mod.includes(modSecim);
     else {
-      const cevap = Number(String(kutu.querySelector("input").value).replace(/\s/g, "").replace(",", "."));
+      const cevap = sayiOku(kutu.querySelector("input").value);
       dogru = I.yakinMi(cevap, d[g]);
     }
     const geri = kutu.querySelector(".geri");
     if (dogru) {
-      geri.innerHTML = `<div class="mesaj ok">Doğru! 🎉</div>`;
+      geri.innerHTML = `<div class="mesaj ok">Doğru! 🎉${benim() ? "" : " <small>(1. aşamada veri göndermediğin için skor tablosuna yazılmadı)</small>"}</div>`;
       if (benim() && !benim().hesap?.[g]) { try { await V.hesapKaydet(uid, g); } catch { /* sessiz */ } }
       kutu.classList.add("tamam");
     } else {
@@ -295,6 +297,13 @@ function gorevlerCiz() {
   };
   gorevDurum();
 }
+// "14.755,2" · "14755,2" · "14755.2" hepsini sayı olarak oku
+function sayiOku(metin) {
+  let t = String(metin).replace(/\s/g, "");
+  if (t.includes(",")) t = t.replace(/\./g, "").replace(",", ".");
+  else if ((t.match(/\./g) || []).length > 1) t = t.replace(/\./g, "");
+  return t === "" ? NaN : Number(t);
+}
 function gorevDurum() {
   const b = benim(), d = dogruCevaplar();
   govde.querySelectorAll(".gorev").forEach(k => {
@@ -302,9 +311,12 @@ function gorevDurum() {
     const tamam = !!b?.hesap?.[g];
     k.classList.toggle("tamam", tamam || k.classList.contains("tamam"));
     k.querySelector(".durum").innerHTML = tamam ? `<span class="etiket teal">✓</span>` : "";
+    const ip = k.querySelector(".ipucu");
     if (kontrol.cevapGoster) {
       const c = g === "mod" ? d.mod.map(m => UYG_ADI[m]).join(", ") : I.bicim(d[g], 2);
-      k.querySelector(".ipucu").innerHTML = `Cevap: <b>${c}</b>`;
+      ip.innerHTML = `Cevap: <b>${kacis(c)}</b>`;
+    } else {
+      ip.textContent = GOREVLER.find(x => x.k === g).ipucu;
     }
   });
 }
@@ -339,6 +351,7 @@ function asama4() {
   $("#getirBtn").onclick = () => {
     const k = KODLAR.find(x => x.id === kontrol.kodId);
     if (k) { ed.value = k.kod; } else { alertMesaj("Sunum ekranı henüz bir kod göndermedi."); }
+    const gb = $("#getirBtn"); gb.classList.remove("coral"); gb.textContent = "Sunumdaki kodu getir";
   };
   $("#calistirBtn").onclick = async () => {
     const btn = $("#calistirBtn"); btn.disabled = true; btn.innerHTML = `<span class="yukleniyor"></span> Çalışıyor`;
@@ -375,6 +388,7 @@ function alertMesaj(t) {
 // ------------------------------------------------------------
 function asama5() {
   govde.innerHTML = `<div id="k5"></div>`;
+  sonCizim5 = "";
   guncelle[5] = k5Ciz;
   k5Ciz();
 }
@@ -414,7 +428,8 @@ function k5Ciz() {
   // Sonuç
   sonCizim5 = "sonuc";
   const p = I.pearson(satirlar.map(r => r.toplam), satirlar.map(r => r.adim));
-  const kendiTahmin = b && Number.isFinite(b.adim) ? p.kesisim + p.egim * b.toplam : null;
+  const kt = b && Number.isFinite(b.adim) ? p.kesisim + p.egim * b.toplam : NaN;
+  const kendiTahmin = Number.isFinite(kt) ? kt : null;
   el.innerHTML = `
     <div class="kart" style="display:grid;gap:10px">
       <span class="etiket violet">Sonuç</span>

@@ -14,7 +14,7 @@ const govde = $("#govde");
 let V, kontrol = null, satirlar = [], cizilen = null, sekme = "ozet", gorulenIsim = new Set(), seciliKod = KODLAR[0].id;
 
 const katilimciUrl = () => {
-  const u = new URL("index.html", location.href);
+  const u = new URL("./", location.href);   // klasör adresi: kısa QR, index.html açılır
   if (V?.demo && new URL(location.href).searchParams.has("demo")) u.searchParams.set("demo", "1");
   return u.href;
 };
@@ -69,7 +69,7 @@ function s1() {
         <div class="kart panel"><h3>Katılanlar</h3><div class="isimler" id="isimler"></div></div>
         <div class="kart panel">
           <h3>Değerleri nereden bulurum?</h3>
-          <p style="margin:0;font-size:17px;line-height:1.6">📱 <b>iPhone:</b> Ayarlar → Ekran Süresi → Tüm Etkinlikleri Gör → Hafta<br>
+          <p style="margin:0;font-size:17px;line-height:1.6">📱 <b>iPhone:</b> Ayarlar → Ekran Süresi → Tüm Uygulama ve Web Sitesi Etkinliğini Gör → Hafta<br>
           🤖 <b>Android:</b> Ayarlar → Dijital Denge (Dijital Sağlıklılık)<br>
           🚶 <b>Adım:</b> Sağlık (iPhone) · Google Fit / Samsung Health / Mi Fitness</p>
         </div>
@@ -77,6 +77,13 @@ function s1() {
     </div>`;
   qrCiz();
   isimleriCiz(true);
+  // Yinelenen / hatalı kaydı tek tek silme
+  $("#isimler").onclick = async e => {
+    const b = e.target.closest(".isim-sil"); if (!b) return;
+    const r = satirlar.find(x => x.id === b.dataset.id); if (!r) return;
+    if (!confirm(`"${r.ad}" kaydı silinsin mi?`)) return;
+    try { await V.katilimciSil(r.id); } catch (err) { alert("Silinemedi: " + err.message); }
+  };
   guncelle[1] = () => { $("#dev").textContent = satirlar.length; isimleriCiz(); };
 }
 function qrCiz() {
@@ -88,7 +95,7 @@ function qrCiz() {
 function isimleriCiz(ilk = false) {
   const el = $("#isimler"); if (!el) return;
   const s = [...satirlar].sort((a, b) => (b.zaman || 0) - (a.zaman || 0));
-  el.innerHTML = s.length ? s.map(r => `<span class="isim" style="${gorulenIsim.has(r.id) || ilk ? "animation:none" : ""}">${kacis(r.ad)}</span>`).join("")
+  el.innerHTML = s.length ? s.map(r => `<span class="isim" style="${gorulenIsim.has(r.id) || ilk ? "animation:none" : ""}">${kacis(r.ad)}<button class="isim-sil" data-id="${kacis(r.id)}" title="Bu kaydı sil">×</button></span>`).join("")
     : `<span class="soluk">Henüz kimse yok… ilk sen ol!</span>`;
   s.forEach(r => gorulenIsim.add(r.id));
 }
