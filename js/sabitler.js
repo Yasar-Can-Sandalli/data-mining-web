@@ -17,8 +17,8 @@ export const ASAMALAR = [
   { no: 1, ad: "Veri toplama" },
   { no: 2, ad: "Hesap makinesi" },
   { no: 3, ad: "Analiz" },
-  { no: 4, ad: "Python" },
-  { no: 5, ad: "Korelasyon & tahmin" },
+  { no: 4, ad: "Korelasyon & tahmin" },
+  { no: 5, ad: "Python" },
   { no: 6, ad: "Ödüller" }
 ];
 
@@ -27,8 +27,8 @@ export const GOREVLER = [
   { k: "ortalama", ad: "Ortalama",          ipucu: "x̄ = Σx / n" },
   { k: "medyan",   ad: "Medyan",            ipucu: "Sırala → tam ortadaki değer (n çiftse ortadaki ikisinin ortalaması)" },
   { k: "mod",      ad: "Mod",               ipucu: "Sınıfta en çok kullanılan uygulama hangisi? (kategorik mod)" },
-  { k: "varyans",  ad: "Varyans (÷ n)",     ipucu: "σ² = Σ(x − x̄)² / n   ya da kısa yol: Σx²/n − x̄²" },
-  { k: "std",      ad: "Standart sapma",    ipucu: "σ = √σ²" }
+  { k: "varyans",  ad: "Varyans (÷ n)",     ipucu: "Kısa yol: Σx² ÷ n − (ortalama)²   →   tuşlar: Σx² ÷ n − ( Σx ÷ n ) x² =" },
+  { k: "std",      ad: "Standart sapma",    ipucu: "σ = √varyans   →   tuşlar: √ ANS =" }
 ];
 
 // Sunumda adım adım verilecek Python kodları. Katılımcı ekranında `df` hazır gelir.
@@ -74,7 +74,7 @@ plt.show()`
   },
   {
     id: "korelasyon",
-    ad: "5 · Korelasyon: ekran süresi ↔ adım",
+    ad: "5 · Korelasyon: tahmini pandas ile doğrula",
     kod:
 `print("r =", round(df["toplam"].corr(df["adim"]), 2))
 plt.scatter(df["toplam"], df["adim"], color="#1E1B4B")

@@ -32,7 +32,7 @@ function ciz(zorla = false) {
   const anahtar = a + "|" + (a === 1 ? (benim() && !duzenle ? "kayitli" : "form") : "");
   if (zorla || anahtar !== cizilenAsama) {
     cizilenAsama = anahtar;
-    ({ 1: asama1, 2: asama3, 3: asama2, 4: asama4, 5: asama5, 6: asama6 })[a]?.();
+    ({ 1: asama1, 2: asama3, 3: asama2, 4: asama5, 5: asama4, 6: asama6 })[a]?.();
     if (a >= 3) pythonHazirla().catch(() => {});        // Python'u arka planda hazırla
   } else {
     guncelle[a]?.();
@@ -369,7 +369,7 @@ function asama4() {
     btn.disabled = false; btn.textContent = "▶ Çalıştır";
   };
   pyDurumGoster();
-  guncelle[4] = () => {};
+  guncelle[5] = () => {};
 }
 function pyDurumGoster() {
   const el = $("#pyDurum"); if (!el) return;
@@ -389,7 +389,7 @@ function alertMesaj(t) {
 function asama5() {
   govde.innerHTML = `<div id="k5"></div>`;
   sonCizim5 = "";
-  guncelle[5] = k5Ciz;
+  guncelle[4] = k5Ciz;
   k5Ciz();
 }
 let sonCizim5 = "";
@@ -481,7 +481,7 @@ function odulListeCiz() {
       kontrol = k;
       if (eski !== k.asama) duzenle = false;
       if (eski === k.asama && (k.asama === 2)) { gorevDurum(); ciplerCiz(); }
-      if (eski === k.asama && k.asama === 4 && kodDegisti && k.kodId) {
+      if (eski === k.asama && k.asama === 5 && kodDegisti && k.kodId) {
         const btn = $("#getirBtn"); if (btn) { btn.classList.add("coral"); btn.textContent = "Yeni kod geldi → getir"; }
       }
       ciz();

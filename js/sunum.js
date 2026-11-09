@@ -30,7 +30,7 @@ $("#adimlar").onclick = async e => {
   const b = e.target.closest("button[data-a]"); if (!b) return;
   const no = Number(b.dataset.a);
   const patch = { asama: no };
-  if (no === 5 && !kontrol.korelasyonGoster) patch.tahminAcik = true;
+  if (no === 4 && !kontrol.korelasyonGoster) patch.tahminAcik = true;
   await V.kontrolYaz(patch);
 };
 
@@ -42,7 +42,7 @@ function ciz(zorla = false) {
   const anahtar = a + "|" + (a === 3 ? sekme : "");
   if (zorla || anahtar !== cizilen) {
     cizilen = anahtar;
-    ({ 1: s1, 2: s3, 3: s2, 4: s4, 5: s5, 6: s6 })[a]?.();
+    ({ 1: s1, 2: s3, 3: s2, 4: s5, 5: s4, 6: s6 })[a]?.();
     if (a >= 3) pythonHazirla().catch(() => {});
   } else {
     guncelle[a]?.();
@@ -241,7 +241,7 @@ function s3() {
 // ------------------------------------------------------------
 function s4() {
   govde.innerHTML = `
-    ${baslik("Aşama 4", "", "Aynı grafikleri Python ile üretin", "Kodu telefonunuzdaki editöre yazın ya da “Sunumdaki kodu getir”e basın · veri <code>df</code> olarak hazır",
+    ${baslik("Aşama 5", "", "Aynı grafikleri Python ile üretin", "Kodu telefonunuzdaki editöre yazın ya da “Sunumdaki kodu getir”e basın · veri <code>df</code> olarak hazır",
       `<span class="rehber" id="pyDurum"></span>`)}
     <div class="s-izgara" style="grid-template-columns: 300px 1fr">
       <div class="kart panel"><h3>Kodlar</h3><div class="kod-liste" id="kodListe"></div></div>
@@ -277,7 +277,7 @@ function s4() {
   const durum = $("#pyDurum");
   durum.innerHTML = `<span class="yukleniyor"></span> Python hazırlanıyor…`;
   pythonHazirla().then(() => { durum.textContent = "✅ Python hazır"; }).catch(e => { durum.textContent = "⚠️ " + e.message; });
-  guncelle[4] = listeCiz;
+  guncelle[5] = listeCiz;
 }
 
 // ------------------------------------------------------------
@@ -285,7 +285,7 @@ function s4() {
 // ------------------------------------------------------------
 function s5() {
   govde.innerHTML = `
-    ${baslik("Aşama 5", "amber", "Ekran süresi arttıkça adım azalıyor mu?", "Önce tahmin edin: korelasyon katsayısı r kaç?", `<div style="display:flex;gap:10px" id="s5btn"></div>`)}
+    ${baslik("Aşama 4", "amber", "Ekran süresi arttıkça adım azalıyor mu?", "Önce tahmin edin: korelasyon katsayısı r kaç?", `<div style="display:flex;gap:10px" id="s5btn"></div>`)}
     <div class="s-izgara" style="grid-template-columns: 1.25fr .75fr">
       <div class="kart panel"><h3>Ekran süresi ↔ günlük adım</h3><div class="grafik-kutu" style="height:520px"><canvas id="sacG"></canvas></div></div>
       <div class="kart panel" id="s5sag"></div>
@@ -323,7 +323,7 @@ function s5() {
       <p class="not" style="margin-top:14px">⚠️ Korelasyon nedensellik değildir · n = ${p.n} · veriler kendi beyanımız</p>`;
   };
   ciz2();
-  guncelle[5] = ciz2;
+  guncelle[4] = ciz2;
 }
 
 // ------------------------------------------------------------

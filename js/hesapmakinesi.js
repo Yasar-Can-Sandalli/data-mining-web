@@ -57,7 +57,7 @@ export const gosterim = s => s.replace(/[*/-]/g, c => GOSTER[c]);
 
 // kap: DOM elemanı. Döndürür: { ekle(sayıMetni), sonuc() }
 export function hesapMakinesi(kap, { sonucDegisti = () => {} } = {}) {
-  let ifade = "", son = null;
+  let ifade = "", son = null, esitSonrasi = false;
   kap.innerHTML = `
     <div class="hm-ekran"><div class="hm-ifade" data-r="ifade">&nbsp;</div><div class="hm-sonuc" data-r="sonuc">0</div></div>
     <div class="hm-tuslar" style="margin-top:10px">
@@ -79,18 +79,23 @@ export function hesapMakinesi(kap, { sonucDegisti = () => {} } = {}) {
   kap.addEventListener("click", e => {
     const b = e.target.closest("button[data-t]"); if (!b) return;
     const t = b.dataset.t;
+    // "=" sonrası: işaretle devam edilirse önceki sonuçtan devam et, sayıyla başlanırsa yeni işlem
+    if (esitSonrasi && t !== "=") {
+      esitSonrasi = false;
+      if (son !== null && ["+", "-", "*", "/", "^", "^2"].includes(t)) ifade = bicimle(son);
+    }
     if (t === "C") { ifade = ""; sonucEl.textContent = "0"; yenile(false); return; }
     if (t === "⌫") { ifade = ifade.slice(0, -1); yenile(); if (!ifade) sonucEl.textContent = "0"; return; }
     if (t === "ANS") { if (son !== null) { if (sayiyaBitiyor()) ifade += "*"; ifade += bicimle(son); yenile(); } return; }
     if (t === "=") {
-      try { son = degerlendir(ifade); sonucEl.textContent = bicimle(son); ifadeEl.textContent = gosterim(ifade) + " ="; ifade = ""; sonucDegisti(son); }
+      try { son = degerlendir(ifade); sonucEl.textContent = bicimle(son); ifadeEl.textContent = gosterim(ifade) + " ="; ifade = ""; esitSonrasi = true; sonucDegisti(son); }
       catch (err) { sonucEl.textContent = "Hata: " + err.message; }
       return;
     }
     ifade += t; yenile();
   });
   return {
-    sayiEkle(metin) { if (sayiyaBitiyor()) ifade += "+"; ifade += metin; yenile(); },
+    sayiEkle(metin) { esitSonrasi = false; if (sayiyaBitiyor()) ifade += "+"; ifade += metin; yenile(); },
     sonuc: () => son
   };
 }
